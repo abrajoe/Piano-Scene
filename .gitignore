@@ -5,3 +5,7 @@ cmake_install.cmake
 install_manifest.txt
 [Bb]uild/
 ipch
+*.suo
+*.sdf
+*.user
+*.filter
