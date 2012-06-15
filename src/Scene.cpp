@@ -2,7 +2,7 @@
 #include "3rdParty\assimp\assimp.hpp"
 #include "3rdParty\assimp\aiScene.h"
 #include "3rdParty\assimp\aiPostProcess.h"
-
+#include <iostream>
 int window;
 int rotation;
 char * dir;
@@ -33,6 +33,38 @@ GLenum returnprimitvetype(aiPrimitiveType t)
 		return GL_TRIANGLES;
   }
 }
+void recursive_render (const aiNode* node, aiMatrix4x4 accumulatedTransform)
+{
+	aiMatrix4x4 transform;
+	if (node->mNumMeshes > 0)
+	{               
+		for (int m=0; m < node->mNumMeshes; m++)
+		{
+			aiMesh* mesh = scene->mMeshes[m];
+			for (int f =0; f< mesh->mNumFaces; f++)
+			{
+				aiFace * face =  &mesh->mFaces[f];
+				glBegin(GL_TRIANGLES);
+				::glColor3d(0,1,0);
+				for (int v=0; v<3; v++)
+				{
+						glVertex3f( mesh->mVertices[ face->mIndices[v]].x,mesh->mVertices[ face->mIndices[v]].y,mesh->mVertices[ face->mIndices[v]].z);
+				}
+				glEnd();
+			}
+		}
+	}
+	 else 
+     {
+		//transform =	node->mTransformation * accumulatedTransform;
+		//glLoadIdentity();
+		//glMultMatrixf((const GLfloat *) &transform);
+     }
+	for (int i=0; i<node->mNumChildren; i++)
+    {
+            recursive_render(node->mChildren[i],transform);
+    }
+}
 void display()
 {
   glLoadIdentity();  
@@ -40,22 +72,25 @@ void display()
   
   glTranslatef(0,0, dist);
   glRotatef(rotation, 0, 1, 0);
-  
-  printf((char*) scene->mMeshes[0]->mPrimitiveTypes);
-
+  ::aiMatrix4x4 mat;
+  recursive_render(scene->mRootNode, mat);
  
   
-  for (int numMesh = 0; numMesh < scene ->mNumMeshes; numMesh++)
-  {
-	  
-	  glBegin(returnprimitvetype(scene->mMeshes[numMesh]->.->mPrimitiveTypes));
-	  glColor3d(0,1,0);
-	  for(int vcount = 0; vcount < scene->mMeshes[numMesh]->mNumVertices; vcount++)
-	  {
-		  glVertex3f(scene->mMeshes[numMesh]->mVertices[vcount].x,scene->mMeshes[numMesh]->mVertices[vcount].y, scene->mMeshes[numMesh]->mVertices[vcount].z);
-	  }
-	glEnd();
-  }
+ // for (int numMesh = 0; numMesh < scene ->mNumMeshes; numMesh++)
+ // {
+	//  //glBegin(returnprimitvetype(scene->mMeshes[numMesh]->mPrimitiveTypes));
+	//  
+	//  glColor3d(0,1,0);
+	//  scene->mRootNode-
+
+	//  for(int vcount = 0; vcount < scene->mMeshes[numMesh]->mNumVertices; vcount++)
+	//  {
+
+	//	 std::cout<<scene->mMeshes[numMesh]->mNumVertices<<std::endl;
+	//	  glVertex3f(scene->mMeshes[numMesh]->mVertices[vcount].x,scene->mMeshes[numMesh]->mVertices[vcount].y, scene->mMeshes[numMesh]->mVertices[vcount].z);
+	//  }
+	//glEnd();
+ // }
 
   glutSwapBuffers();
   // Now we can access the file's contents. 
@@ -110,7 +145,7 @@ Scene::Scene(int argc, char ** argv)
 {
 	dist = -6.0f;
 	    Assimp::Importer importer;
-		(importer.ReadFile( "C:\\Users\\abrajoe\\Documents\\Visual Studio 2010\\Projects\\Piano-Scene\\Debug\\sw.obj", 
+		(importer.ReadFile( "C:\\Users\\abrajoe\\Documents\\Visual Studio 2010\\Projects\\Piano-Scene\\Debug\\lung.blend", 
         aiProcess_CalcTangentSpace       | 
         aiProcess_Triangulate            |
         aiProcess_JoinIdenticalVertices  |
