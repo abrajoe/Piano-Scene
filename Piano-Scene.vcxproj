@@ -39,7 +39,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\abrajoe\Desktop\boost_1_49_0;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <ReferencePath>$(ReferencePath)</ReferencePath>
+    <LibraryPath>C:\Users\abrajoe\Documents\Visual Studio 2010\Projects\Piano-Scene\extlibs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -55,6 +57,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -78,7 +81,17 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Piano.cpp" />
     <ClCompile Include="src\Piano-Scene.cpp" />
+    <ClCompile Include="src\Scene.cpp" />
+    <ClCompile Include="Surface.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Piano.h" />
+    <ClInclude Include="src\Scene.h" />
+    <ClInclude Include="Surface.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
