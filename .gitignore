@@ -9,3 +9,8 @@ ipch
 *.sdf
 *.user
 *.filter
+*.tlog
+*.idb
+*.exe
+*.manifest
+*.obj
